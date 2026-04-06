@@ -7446,7 +7446,7 @@ GameObject:
   - component: {fileID: 2079347297}
   - component: {fileID: 2079347298}
   m_Layer: 0
-  m_Name: agrias_2
+  m_Name: bigfoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7462,7 +7462,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.33634844, y: 0.38596383, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1257252780}
@@ -7516,7 +7516,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1147989188, guid: 56c3ce7c8c0d0a445b3bdcab1da34ba9, type: 3}
+  m_Sprite: {fileID: 1686722348, guid: 6097e68226e7d204aabe18469c908e09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
