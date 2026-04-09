@@ -20,13 +20,14 @@ public class Character : MonoBehaviour
     public float speed => _speed;
     [SerializeField]
     float turn = 100;
+    public Vector2 dir;
 
-    public Vector2 direction { get; private set; } = Vector2.zero;
-    public void Move(InputAction.CallbackContext context)
-    {
-        direction = context.ReadValue<Vector2>().normalized;
-        print(direction);
-    }
+    
+    // public void Move(InputAction.CallbackContext context)
+    // {
+    //     direction = context.ReadValue<Vector2>().normalized;
+    //     print(direction);
+    // }
 
     async void Start()
     {
@@ -34,10 +35,10 @@ public class Character : MonoBehaviour
         while (this)
         {
             await Awaitable.FixedUpdateAsync();
-            if (direction.sqrMagnitude > 0)
+            if (dir.sqrMagnitude > 0)
             {
-                body.rotation = body.rotation.RotatedTowards(direction.LookDirection(), turn * Time.deltaTime);
-                body.position = Vector3.MoveTowards(body.position, body.position + direction.Expand(), speed * Time.deltaTime);
+                body.rotation = body.rotation.RotatedTowards(dir.LookDirection(), turn * Time.deltaTime);
+                body.position = Vector3.MoveTowards(body.position, body.position + dir.Expand(), speed * Time.deltaTime);
             }
             body.linearVelocity.Scale(Vector3.up);
         }
