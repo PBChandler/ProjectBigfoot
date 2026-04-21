@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
-using UnityEditor.ShaderGraph.Internal;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -18,13 +16,17 @@ public class BigfootPerception : MonoBehaviour
     [SerializeField] RenderTexture actualScreen;
 
     public RawImage playerHands;
+    public Texture2D pluey;
     
     public GameObject flashlight;
     public float defaultFov = 6.2f;
     public Camera minus, just, regular;
     float lastScore = 0;
     public MeshRenderer source;
+    public RawImage cameraz;
+    public Texture2D camSprite1, camSprite2;
 
+    public List<TextMeshProUGUI> textObjects = new List<TextMeshProUGUI>();
     public List<float> chess = new List<float>();
     public void Start()
     {
@@ -32,7 +34,7 @@ public class BigfootPerception : MonoBehaviour
         farPos = wholeSystemCamera.localPosition + (wholeSystemCamera.forward*12);
         InvokeRepeating("camupdate", 0f, 0.3f);
     }
-
+    int idx = 0;
     public void Update()
     {
         if(fpc.isZoomed)
@@ -50,10 +52,14 @@ public class BigfootPerception : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-            
+            cameraz.texture = camSprite2;
+            GetComponent<AudioSource>().Play();
             chess.Add(lastScore);
             flashlight.SetActive(true);
             Invoke("resetlight", 0.2f);
+            if(idx < textObjects.Count)
+                textObjects[idx].text = "Picture " + (idx+1) + ": " + lastScore + "%";
+            idx++;
         }
 
     }
@@ -61,6 +67,7 @@ public class BigfootPerception : MonoBehaviour
     public void resetlight()
     {
         flashlight.SetActive(false);
+          cameraz.texture = camSprite1;
     }
     public void camupdate()
     {
