@@ -16,6 +16,7 @@ using UnityEngine.UI;
 
 public class FirstPersonController : MonoBehaviour
 {
+    public FootSteps myFootsteps;
     private Rigidbody rb;
 
     #region Camera Movement Variables
@@ -48,7 +49,7 @@ public class FirstPersonController : MonoBehaviour
     public float zoomStepTime = 5f;
 
     // Internal Variables
-    private bool isZoomed = false;
+    public bool isZoomed = false;
 
     #endregion
     #endregion
@@ -112,7 +113,7 @@ public class FirstPersonController : MonoBehaviour
     public float speedReduction = .5f;
 
     // Internal Variables
-    private bool isCrouched = false;
+    public bool isCrouched = false;
     private Vector3 originalScale;
 
     #endregion
@@ -133,6 +134,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
+        myFootsteps = GetComponent<FootSteps>();
         rb = GetComponent<Rigidbody>();
 
         crosshairObject = GetComponentInChildren<Image>();
@@ -237,6 +239,7 @@ public class FirstPersonController : MonoBehaviour
                 if (!isZoomed)
                 {
                     isZoomed = true;
+                   
                 }
                 else
                 {
@@ -262,6 +265,12 @@ public class FirstPersonController : MonoBehaviour
             if(isZoomed)
             {
                 playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, zoomFOV, zoomStepTime * Time.deltaTime);
+                RaycastHit e;
+                    Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out e);
+                    if(e.collider != null)
+                    {
+                        e.collider.gameObject.SendMessage("OnInteract", SendMessageOptions.DontRequireReceiver);
+                    }
             }
             else if(!isZoomed && !isSprinting)
             {
@@ -340,18 +349,22 @@ public class FirstPersonController : MonoBehaviour
             if(Input.GetKeyDown(crouchKey) && !holdToCrouch)
             {
                 Crouch();
+                
             }
             
             if(Input.GetKeyDown(crouchKey) && holdToCrouch)
             {
                 isCrouched = false;
+                isZoomed = true;
                 Crouch();
             }
             else if(Input.GetKeyUp(crouchKey) && holdToCrouch)
             {
                 isCrouched = true;
+                isZoomed = false;
                 Crouch();
             }
+            
         }
 
         #endregion
@@ -384,6 +397,13 @@ public class FirstPersonController : MonoBehaviour
                 isWalking = false;
             }
 
+            if(isWalking && !myFootsteps.src.isPlaying && !isCrouched)
+            {
+                int coinFlip = Random.Range(0,2);
+                if(coinFlip == 1)
+                    myFootsteps.PlayRandomFootStep();
+            }
+            
             // All movement calculations shile sprint is active
             if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
             {
@@ -483,7 +503,7 @@ public class FirstPersonController : MonoBehaviour
         {
             transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
             walkSpeed /= speedReduction;
-
+            
             isCrouched = false;
         }
         // Crouches player down to set height
@@ -518,11 +538,13 @@ public class FirstPersonController : MonoBehaviour
             }
             // Applies HeadBob movement
             joint.localPosition = new Vector3(jointOriginalPos.x + Mathf.Sin(timer) * bobAmount.x, jointOriginalPos.y + Mathf.Sin(timer) * bobAmount.y, jointOriginalPos.z + Mathf.Sin(timer) * bobAmount.z);
+           
         }
         else
         {
             // Resets when play stops moving
             timer = 0;
+            
             joint.localPosition = new Vector3(Mathf.Lerp(joint.localPosition.x, jointOriginalPos.x, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.y, jointOriginalPos.y, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.z, jointOriginalPos.z, Time.deltaTime * bobSpeed));
         }
     }

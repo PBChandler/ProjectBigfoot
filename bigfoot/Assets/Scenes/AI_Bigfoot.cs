@@ -9,7 +9,7 @@ public class AI_Bigfoot : MonoBehaviour
     public NavMeshAgent nma;
     public Vector3 location;
     public Transform targetpoint;
-
+    public Animator anim;
     public GameObject indicator;
     public float fleeDistance = 5f;
     public GameObject player;
@@ -74,6 +74,7 @@ public class AI_Bigfoot : MonoBehaviour
             }
         }
         
+        anim.SetFloat("speed", nma.velocity.normalized.magnitude);
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         if (distanceToPlayer < fleeDistance) {
@@ -87,6 +88,9 @@ public class AI_Bigfoot : MonoBehaviour
             chasingPlayer = false;
         }
         indicator.transform.position = nma.destination;
+
+       
+
     }
 
     public GameChunk pickNewLocation()
